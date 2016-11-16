@@ -299,6 +299,9 @@ void              gtk_widget_adjust_size_allocation        (GtkWidget         *w
 void              gtk_widget_adjust_baseline_request       (GtkWidget *widget,
                                                             gint      *minimum_baseline,
                                                             gint      *natural_baseline);
+void              gtk_widget_snapshot_child                (GtkWidget            *widget,
+                                                            GtkWidget            *child,
+                                                            GtkSnapshot          *snapshot);
 
 void              gtk_widget_forall                        (GtkWidget            *widget,
                                                             GtkCallback           callback,
