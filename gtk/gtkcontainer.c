@@ -3067,9 +3067,9 @@ static void
 gtk_container_snapshot_forall (GtkWidget *child,
                                gpointer   snapshot)
 {
-  gtk_container_snapshot_child (GTK_CONTAINER (_gtk_widget_get_parent (child)),
-                                child,
-                                snapshot);
+  gtk_widget_snapshot_child (_gtk_widget_get_parent (child),
+                             child,
+                             snapshot);
 }
 
 static void
@@ -3230,25 +3230,6 @@ gtk_container_propagate_draw (GtkContainer *container,
   gtk_widget_draw_internal (child, cr, TRUE);
 
   cairo_restore (cr);
-}
-
-void
-gtk_container_snapshot_child (GtkContainer      *container,
-                              GtkWidget         *child,
-                              GtkSnapshot       *snapshot)
-{
-  int x, y;
-
-  g_return_if_fail (GTK_IS_CONTAINER (container));
-  g_return_if_fail (GTK_IS_WIDGET (child));
-  g_return_if_fail (_gtk_widget_get_parent (child) == GTK_WIDGET (container));
-  g_return_if_fail (snapshot != NULL);
-
-  gtk_container_get_translation_to_child (container, child, &x, &y);
-
-  gtk_snapshot_translate_2d (snapshot, x, y);
-  gtk_widget_snapshot (child, snapshot);
-  gtk_snapshot_translate_2d (snapshot, -x, -y);
 }
 
 /**
