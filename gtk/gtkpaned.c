@@ -1679,7 +1679,7 @@ gtk_paned_render (GtkCssGadget *gadget,
                        gdk_window_get_width (priv->child1_window),
                        gdk_window_get_height (priv->child1_window));
       cairo_clip (cr);
-      gtk_container_propagate_draw (GTK_CONTAINER (widget), priv->child1, cr);
+      gtk_widget_propagate_draw (widget, priv->child1, cr);
       cairo_restore (cr);
     }
 
@@ -1693,7 +1693,7 @@ gtk_paned_render (GtkCssGadget *gadget,
                        gdk_window_get_width (priv->child2_window),
                        gdk_window_get_height (priv->child2_window));
       cairo_clip (cr);
-      gtk_container_propagate_draw (GTK_CONTAINER (widget), priv->child2, cr);
+      gtk_widget_propagate_draw (widget, priv->child2, cr);
       cairo_restore (cr);
     }
 

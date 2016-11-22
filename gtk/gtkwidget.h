@@ -1263,6 +1263,11 @@ GtkWidget *             gtk_widget_get_next_sibling     (GtkWidget *widget);
 GDK_AVAILABLE_IN_3_90
 GtkWidget *             gtk_widget_get_prev_sibling     (GtkWidget *widget);
 
+GDK_AVAILABLE_IN_3_90
+void                    gtk_widget_propagate_draw       (GtkWidget *widget,
+                                                         GtkWidget *child,
+                                                         cairo_t   *cr);
+
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(GtkWidget, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(GtkRequisition, gtk_requisition_free)
 

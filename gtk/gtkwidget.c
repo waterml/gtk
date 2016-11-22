@@ -15833,3 +15833,41 @@ gtk_widget_snapshot_child (GtkWidget      *widget,
   gtk_widget_snapshot (child, snapshot);
   gtk_snapshot_translate_2d (snapshot, -x, -y);
 }
+
+static gboolean
+gtk_widget_should_propagate_draw (GtkWidget *widget,
+                                  GtkWidget *child,
+                                  cairo_t   *cr)
+{
+  GdkWindow *child_in_window;
+
+  if (!_gtk_widget_is_drawable (child))
+    return FALSE;
+
+  return TRUE;
+}
+
+void
+gtk_widget_propagate_draw (GtkWidget *widget,
+                           GtkWidget *child,
+                           cairo_t   *cr)
+{
+  int x, y;
+
+  g_return_if_fail (GTK_IS_WIDGET (widget));
+  g_return_if_fail (GTK_IS_WIDGET (child));
+  g_return_if_fail (cr != NULL);
+  g_return_if_fail (_gtk_widget_get_parent (child) == widget);
+
+  if (!gtk_widget_should_propagate_draw (widget, child, cr))
+    return;
+
+  gtk_widget_get_translation_to_child (widget, child, &x, &y);
+
+  cairo_save (cr);
+  cairo_translate (cr, x, y);
+
+  gtk_widget_draw_internal (child, cr, TRUE);
+
+  cairo_restore (cr);
+}

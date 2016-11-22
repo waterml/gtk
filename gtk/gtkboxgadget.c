@@ -508,7 +508,7 @@ gtk_box_gadget_draw (GtkCssGadget *gadget,
       GtkBoxGadgetChild *child = &g_array_index (priv->children, GtkBoxGadgetChild, draw_index);
 
       if (GTK_IS_WIDGET (child->object))
-        gtk_container_propagate_draw (GTK_CONTAINER (owner), GTK_WIDGET (child->object), cr);
+        gtk_widget_propagate_draw (owner, GTK_WIDGET (child->object), cr);
       else
         gtk_css_gadget_draw (GTK_CSS_GADGET (child->object), cr);
     }

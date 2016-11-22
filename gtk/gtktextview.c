@@ -5945,9 +5945,9 @@ gtk_text_view_draw (GtkWidget *widget,
       /* propagate_draw checks that event->window matches
        * child->window
        */
-      gtk_container_propagate_draw (GTK_CONTAINER (widget),
-                                    vc->widget,
-                                    cr);
+      gtk_widget_propagate_draw (widget,
+                                 vc->widget,
+                                 cr);
       
       tmp_list = tmp_list->next;
     }

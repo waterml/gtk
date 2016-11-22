@@ -839,9 +839,9 @@ gtk_toolbar_render (GtkCssGadget *gadget,
       toolbar_content_draw (content, GTK_CONTAINER (widget), cr);
     }
   
-  gtk_container_propagate_draw (GTK_CONTAINER (widget),
-				priv->arrow_button,
-				cr);
+  gtk_widget_propagate_draw (widget,
+                             priv->arrow_button,
+                             cr);
 
   return FALSE;
 }
@@ -3159,7 +3159,7 @@ toolbar_content_draw (ToolbarContent *content,
   widget = GTK_WIDGET (content->item);
 
   if (widget)
-    gtk_container_propagate_draw (container, widget, cr);
+    gtk_widget_propagate_draw (GTK_WIDGET (container), widget, cr);
 }
 
 static gboolean

@@ -5388,7 +5388,7 @@ gtk_tree_view_draw (GtkWidget *widget,
     {
       GtkTreeViewChild *child = list->data;
 
-      gtk_container_propagate_draw (GTK_CONTAINER (tree_view), child->widget, cr);
+      gtk_widget_propagate_draw (widget, child->widget, cr);
     }
   
   if (tree_view->priv->drag_highlight_window)
@@ -5430,16 +5430,16 @@ gtk_tree_view_draw (GtkWidget *widget,
       if (gtk_tree_view_column_get_visible (column))
         {
           button = gtk_tree_view_column_get_button (column);
-          gtk_container_propagate_draw (GTK_CONTAINER (tree_view),
-                                        button, cr);
+          gtk_widget_propagate_draw (widget,
+                                     button, cr);
         }
     }
 
   if (tree_view->priv->drag_window)
     {
       button = gtk_tree_view_column_get_button (tree_view->priv->drag_column);
-      gtk_container_propagate_draw (GTK_CONTAINER (tree_view),
-                                    button, cr);
+      gtk_widget_propagate_draw (widget,
+                                 button, cr);
     }
 
   gtk_style_context_restore (context);

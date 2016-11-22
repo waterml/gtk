@@ -1933,9 +1933,9 @@ gtk_stack_draw_crossfade (GtkWidget *widget,
   gdouble progress = gtk_progress_tracker_get_progress (&priv->tracker, FALSE);
 
   cairo_push_group (cr);
-  gtk_container_propagate_draw (GTK_CONTAINER (stack),
-                                priv->visible_child->widget,
-                                cr);
+  gtk_widget_propagate_draw (widget,
+                             priv->visible_child->widget,
+                             cr);
   cairo_save (cr);
 
   /* Multiply alpha by progress */
@@ -2004,9 +2004,9 @@ gtk_stack_draw_under (GtkWidget *widget,
   cairo_rectangle (cr, x, y, width, height);
   cairo_clip (cr);
 
-  gtk_container_propagate_draw (GTK_CONTAINER (stack),
-                                priv->visible_child->widget,
-                                cr);
+  gtk_widget_propagate_draw (widget,
+                             priv->visible_child->widget,
+                             cr);
 
   cairo_restore (cr);
 
@@ -2077,9 +2077,9 @@ gtk_stack_draw_slide (GtkWidget *widget,
       cairo_restore (cr);
      }
 
-  gtk_container_propagate_draw (GTK_CONTAINER (stack),
-                                priv->visible_child->widget,
-                                cr);
+  gtk_widget_propagate_draw (widget,
+                             priv->visible_child->widget,
+                             cr);
 }
 
 static gboolean
@@ -2171,9 +2171,9 @@ gtk_stack_render (GtkCssGadget *gadget,
 
         }
       else
-        gtk_container_propagate_draw (GTK_CONTAINER (stack),
-                                      priv->visible_child->widget,
-                                      cr);
+        gtk_widget_propagate_draw (widget,
+                                   priv->visible_child->widget,
+                                   cr);
     }
 
   return FALSE;

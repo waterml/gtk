@@ -3055,7 +3055,7 @@ gtk_container_draw (GtkWidget *widget,
   for (i = 0; i < child_infos->len; i++)
     {
       child_info = &g_array_index (child_infos, ChildOrderInfo, i);
-      gtk_container_propagate_draw (container, child_info->child, cr);
+      gtk_widget_propagate_draw (widget, child_info->child, cr);
     }
 
   g_array_free (child_infos, TRUE);
@@ -3131,105 +3131,6 @@ gtk_container_get_children_clip (GtkContainer  *container,
   memset (out_clip, 0, sizeof (GtkAllocation));
 
   gtk_container_forall (container, union_with_clip, out_clip);
-}
-
-static void
-gtk_container_get_translation_to_child (GtkContainer *container,
-                                        GtkWidget    *child,
-                                        int          *x_out,
-                                        int          *y_out)
-{
-  GtkAllocation allocation;
-  GdkWindow *window, *w;
-  int x, y;
-
-  /* translate coordinates. Ugly business, that. */
-  if (!_gtk_widget_get_has_window (GTK_WIDGET (container)))
-    {
-      _gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
-      x = -allocation.x;
-      y = -allocation.y;
-    }
-  else
-    {
-      x = 0;
-      y = 0;
-    }
-
-  window = _gtk_widget_get_window (GTK_WIDGET (container));
-
-  for (w = _gtk_widget_get_window (child); w && w != window; w = gdk_window_get_parent (w))
-    {
-      int wx, wy;
-      gdk_window_get_position (w, &wx, &wy);
-      x += wx;
-      y += wy;
-    }
-
-  if (w == NULL)
-    {
-      x = 0;
-      y = 0;
-    }
-
-  if (!_gtk_widget_get_has_window (child))
-    {
-      _gtk_widget_get_allocation (child, &allocation);
-      x += allocation.x;
-      y += allocation.y;
-    }
-
-  *x_out = x;
-  *y_out = y;
-}
-
-/**
- * gtk_container_propagate_draw:
- * @container: a #GtkContainer
- * @child: a child of @container
- * @cr: Cairo context as passed to the container. If you want to use @cr
- *   in container’s draw function, consider using cairo_save() and
- *   cairo_restore() before calling this function.
- *
- * When a container receives a call to the draw function, it must send
- * synthetic #GtkWidget::draw calls to all children that don’t have their
- * own #GdkWindows. This function provides a convenient way of doing this.
- * A container, when it receives a call to its #GtkWidget::draw function,
- * calls gtk_container_propagate_draw() once for each child, passing in
- * the @cr the container received.
- *
- * gtk_container_propagate_draw() takes care of translating the origin of @cr,
- * and deciding whether the draw needs to be sent to the child. It is a
- * convenient and optimized way of getting the same effect as calling
- * gtk_widget_draw() on the child directly.
- *
- * In most cases, a container can simply either inherit the
- * #GtkWidget::draw implementation from #GtkContainer, or do some drawing
- * and then chain to the ::draw implementation from #GtkContainer.
- **/
-void
-gtk_container_propagate_draw (GtkContainer *container,
-                              GtkWidget    *child,
-                              cairo_t      *cr)
-{
-  int x, y;
-
-  g_return_if_fail (GTK_IS_CONTAINER (container));
-  g_return_if_fail (GTK_IS_WIDGET (child));
-  g_return_if_fail (cr != NULL);
-  g_return_if_fail (_gtk_widget_get_parent (child) == GTK_WIDGET (container));
-
-  if (!gtk_container_should_propagate_draw (container, child, cr))
-    return;
-
-  gtk_container_get_translation_to_child (container, child, &x, &y);
-
-  cairo_save (cr);
-  cairo_translate (cr, x, y);
-
-  gtk_widget_draw_internal (child, cr, TRUE);
-
-  cairo_restore (cr);
 }
 
 /**

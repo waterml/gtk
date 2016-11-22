@@ -2371,9 +2371,9 @@ gtk_notebook_draw_stack (GtkCssGadget *gadget,
   GtkNotebookPrivate *priv = notebook->priv;
 
   if (gtk_notebook_has_current_page (notebook))
-    gtk_container_propagate_draw (GTK_CONTAINER (notebook),
-                                  priv->cur_page->child,
-                                  cr);
+    gtk_widget_propagate_draw (widget,
+                               priv->cur_page->child,
+                               cr);
 
   return FALSE;
 }
@@ -3490,7 +3490,7 @@ on_drag_icon_draw (GtkWidget *widget,
                     requisition.height);
 
   if (child)
-    gtk_container_propagate_draw (GTK_CONTAINER (widget), child, cr);
+    gtk_widget_propagate_draw (widget, child, cr);
 
   gtk_style_context_restore (context);
 
@@ -4592,9 +4592,9 @@ draw_tab (GtkCssGadget *gadget,
 
   widget = gtk_css_gadget_get_owner (gadget);
 
-  gtk_container_propagate_draw (GTK_CONTAINER (widget),
-                                page->tab_label,
-                                cr);
+  gtk_widget_propagate_draw (widget,
+                             page->tab_label,
+                             cr);
 
   return gtk_widget_has_visible_focus (widget) &&
          GTK_NOTEBOOK (widget)->priv->cur_page == page;
