@@ -6316,7 +6316,7 @@ get_render_mode (GtkWidgetClass *klass)
   return RENDER_SNAPSHOT;
 }
 
-void
+static void
 gtk_widget_draw_internal (GtkWidget *widget,
                           cairo_t   *cr,
                           gboolean   clip_to_size)
