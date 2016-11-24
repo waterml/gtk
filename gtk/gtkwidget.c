@@ -3803,6 +3803,7 @@ gtk_widget_init (GTypeInstance *instance, gpointer g_class)
   priv->last_child = NULL;
   priv->prev_sibling = NULL;
   priv->next_sibling = NULL;
+  priv->focus_child = NULL;
 
   priv->sensitive = TRUE;
   priv->redraw_on_alloc = TRUE;
@@ -15840,4 +15841,29 @@ gtk_widget_get_children_clip (GtkWidget     *widget,
       else
         gdk_rectangle_union (&widget_clip, out_clip, out_clip);
     }
+}
+
+void
+gtk_widget_set_focus_child (GtkWidget *widget,
+                            GtkWidget *child)
+{
+  GtkWidgetPrivate *priv = gtk_widget_get_instance_private (widget);
+
+  g_return_if_fail (GTK_IS_WIDGET (widget));
+  g_return_if_fail (child == NULL || GTK_IS_WIDGET (child));
+
+  if (child != priv->focus_child)
+    {
+      if (priv->focus_child)
+        g_object_unref (priv->focus_child);
+      priv->focus_child = child;
+      if (priv->focus_child)
+        g_object_ref (priv->focus_child);
+    }
+}
+
+GtkWidget *
+gtk_widget_get_focus_child (GtkWidget *widget)
+{
+  return widget->priv->focus_child;
 }
