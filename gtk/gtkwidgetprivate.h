@@ -299,6 +299,8 @@ void              gtk_widget_adjust_baseline_request       (GtkWidget *widget,
 void              gtk_widget_snapshot_child                (GtkWidget            *widget,
                                                             GtkWidget            *child,
                                                             GtkSnapshot          *snapshot);
+void              gtk_widget_get_children_clip             (GtkWidget     *container,
+                                                            GtkAllocation *out_clip);
 
 void              gtk_widget_forall                        (GtkWidget            *widget,
                                                             GtkCallback           callback,

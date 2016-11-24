@@ -15816,3 +15816,28 @@ gtk_widget_propagate_draw (GtkWidget *widget,
 
   cairo_restore (cr);
 }
+
+void
+gtk_widget_get_children_clip (GtkWidget     *widget,
+                              GtkAllocation *out_clip)
+{
+  GtkWidget *child;
+
+  for (child = gtk_widget_get_first_child (widget);
+       child != NULL;
+       child = gtk_widget_get_next_sibling (child))
+    {
+      GtkAllocation widget_clip;
+
+      if (!gtk_widget_is_visible (widget) ||
+          !_gtk_widget_get_child_visible (widget))
+        return;
+
+      gtk_widget_get_clip (widget, &widget_clip);
+
+      if (out_clip->width == 0 || out_clip->height == 0)
+        *out_clip = widget_clip;
+      else
+        gdk_rectangle_union (&widget_clip, out_clip, out_clip);
+    }
+}
