@@ -7187,19 +7187,17 @@ gtk_widget_grab_focus (GtkWidget *widget)
 }
 
 static void
-reset_focus_recurse (GtkWidget *widget,
-		     gpointer   data)
+reset_focus_recurse (GtkWidget *widget)
 {
-  if (GTK_IS_CONTAINER (widget))
+  GtkWidget *child;
+
+  gtk_widget_set_focus_child (widget, NULL);
+
+  for (child = gtk_widget_get_first_child (widget);
+       child != NULL;
+       child = gtk_widget_get_next_sibling (child))
     {
-      GtkContainer *container;
-
-      container = GTK_CONTAINER (widget);
-      gtk_container_set_focus_child (container, NULL);
-
-      gtk_container_foreach (container,
-			     reset_focus_recurse,
-			     NULL);
+      reset_focus_recurse (child);
     }
 }
 
@@ -7241,7 +7239,7 @@ gtk_widget_real_grab_focus (GtkWidget *focus_widget)
 		  while (widget->priv->parent)
 		    {
 		      widget = widget->priv->parent;
-		      gtk_container_set_focus_child (GTK_CONTAINER (widget), NULL);
+                      gtk_widget_set_focus_child (widget, NULL);
 		      if (widget == common_ancestor)
 		        break;
 		    }
@@ -7250,13 +7248,16 @@ gtk_widget_real_grab_focus (GtkWidget *focus_widget)
 	}
       else if (toplevel != focus_widget)
 	{
+          GtkWidget *child;
 	  /* gtk_widget_grab_focus() operates on a tree without window...
 	   * actually, this is very questionable behavior.
 	   */
-
-	  gtk_container_foreach (GTK_CONTAINER (toplevel),
-				 reset_focus_recurse,
-				 NULL);
+          for (child = gtk_widget_get_first_child (toplevel);
+               child != NULL;
+               child = gtk_widget_get_next_sibling (child))
+            {
+              reset_focus_recurse (child);
+            }
 	}
 
       /* now propagate the new focus up the widget tree and finally
@@ -7265,7 +7266,7 @@ gtk_widget_real_grab_focus (GtkWidget *focus_widget)
       widget = focus_widget;
       while (widget->priv->parent)
 	{
-	  gtk_container_set_focus_child (GTK_CONTAINER (widget->priv->parent), widget);
+          gtk_widget_set_focus_child (widget->priv->parent, widget);
 	  widget = widget->priv->parent;
 	}
       if (GTK_IS_WINDOW (widget))
