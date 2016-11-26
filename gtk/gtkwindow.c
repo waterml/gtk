@@ -2539,7 +2539,7 @@ gtk_window_set_focus (GtkWindow *window,
 	  while ((parent = _gtk_widget_get_parent (widget)))
 	    {
 	      widget = parent;
-	      gtk_container_set_focus_child (GTK_CONTAINER (widget), NULL);
+	      gtk_widget_set_focus_child (widget, NULL);
 	    }
 	}
       
@@ -8007,7 +8007,7 @@ gtk_window_focus (GtkWidget        *widget,
       parent = _gtk_widget_get_parent (priv->focus_widget);
       while (parent)
 	{
-	  gtk_container_set_focus_child (GTK_CONTAINER (parent), NULL);
+	  gtk_widget_set_focus_child (parent, NULL);
 	  parent = _gtk_widget_get_parent (parent);
 	}
       
@@ -8212,7 +8212,7 @@ _gtk_window_unset_focus_and_default (GtkWindow *window,
   g_object_ref (widget);
 
   parent = _gtk_widget_get_parent (widget);
-  if (gtk_container_get_focus_child (GTK_CONTAINER (parent)) == widget)
+  if (gtk_widget_get_focus_child (parent) == widget)
     {
       child = priv->focus_widget;
       
@@ -10410,7 +10410,7 @@ gtk_window_activate_menubar (GtkWindow   *window,
       if (tmp_menubars == NULL)
         return FALSE;
 
-      menubars = _gtk_container_focus_sort (GTK_CONTAINER (window), tmp_menubars,
+      menubars = _gtk_container_focus_sort (GTK_WIDGET (window), tmp_menubars,
                                             GTK_DIR_TAB_FORWARD, NULL);
       g_list_free (tmp_menubars);
 

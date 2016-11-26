@@ -7379,19 +7379,99 @@ gtk_widget_real_style_updated (GtkWidget *widget)
 }
 
 static gboolean
+gtk_widget_focus_move (GtkWidget        *widget,
+                       GList            *children,
+                       GtkDirectionType  direction)
+{
+  GtkWidget *focus_child;
+  GtkWidget *child;
+  GList *l;
+
+  focus_child = gtk_widget_get_focus_child (widget);
+
+  l = children;
+  while (l)
+    {
+      child = l->data;
+      l = l->next;
+
+      if (focus_child)
+        {
+          if (focus_child == child)
+            {
+              focus_child = NULL;
+
+              if (gtk_widget_child_focus (child, direction))
+                return TRUE;
+            }
+        }
+      else if (_gtk_widget_is_drawable (child) &&
+               gtk_widget_is_ancestor (child, widget))
+        {
+          if (gtk_widget_child_focus (child, direction))
+            return TRUE;
+        }
+    }
+
+  return FALSE;
+}
+
+static gboolean
 gtk_widget_real_focus (GtkWidget         *widget,
                        GtkDirectionType   direction)
 {
-  if (!gtk_widget_get_can_focus (widget))
-    return FALSE;
-
-  if (!gtk_widget_is_focus (widget))
+  if (gtk_widget_get_can_focus (widget))
     {
-      gtk_widget_grab_focus (widget);
-      return TRUE;
+      if (!gtk_widget_has_focus (widget))
+        {
+          gtk_widget_grab_focus (widget);
+          return TRUE;
+        }
     }
   else
-    return FALSE;
+    {
+      GtkWidget *child;
+      GList *children = NULL;
+      gboolean ret;
+
+      /* TODO: Focus chain support? */
+      for (child = gtk_widget_get_last_child (widget);
+           child != NULL;
+           child = gtk_widget_get_prev_sibling (child))
+        {
+          children = g_list_prepend (children, child);
+        }
+
+      children = _gtk_container_focus_sort (widget, children, direction, NULL);
+
+      /* Get a list of the containers children, allowing focus
+       * chain to override.
+       */
+      /*if (priv->has_focus_chain)*/
+        /*children = g_list_copy (get_focus_chain (container));*/
+      /*else*/
+        /*children = gtk_container_get_all_children (container);*/
+#if 0
+      if (priv->has_focus_chain &&
+          (direction == GTK_DIR_TAB_FORWARD ||
+           direction == GTK_DIR_TAB_BACKWARD))
+        {
+          sorted_children = g_list_copy (children);
+
+          if (direction == GTK_DIR_TAB_BACKWARD)
+            sorted_children = g_list_reverse (sorted_children);
+        }
+      else
+        sorted_children = _gtk_container_focus_sort (container, children, direction, NULL);
+#endif
+
+      ret = gtk_widget_focus_move (widget, children, direction);
+      g_list_free (children);
+
+      return ret;
+    }
+
+  return FALSE;
 }
 
 static void
@@ -15807,8 +15887,6 @@ gtk_widget_should_propagate_draw (GtkWidget *widget,
                                   GtkWidget *child,
                                   cairo_t   *cr)
 {
-  GdkWindow *child_in_window;
-
   if (!_gtk_widget_is_drawable (child))
     return FALSE;
 

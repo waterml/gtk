@@ -650,7 +650,7 @@ gtk_radio_button_focus (GtkWidget         *widget,
       for (l = priv->group; l; l = l->next)
         children = g_list_prepend (children, l->data);
 
-      focus_list = _gtk_container_focus_sort (GTK_CONTAINER (toplevel), children, direction, widget);
+      focus_list = _gtk_container_focus_sort (GTK_WIDGET (toplevel), children, direction, widget);
       tmp_list = g_list_find (focus_list, widget);
 
       if (tmp_list)

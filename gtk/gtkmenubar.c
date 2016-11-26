@@ -694,7 +694,7 @@ _gtk_menu_bar_cycle_focus (GtkMenuBar       *menubar,
       GList *menubars;
       GList *current;
 
-      menubars = _gtk_container_focus_sort (GTK_CONTAINER (toplevel), tmp_menubars,
+      menubars = _gtk_container_focus_sort (GTK_WIDGET (toplevel), tmp_menubars,
 					    dir, GTK_WIDGET (menubar));
       g_list_free (tmp_menubars);
 
