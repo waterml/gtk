@@ -42,7 +42,6 @@
 #include "gtkmarshalers.h"
 #include "gtksizerequest.h"
 #include "gtksizerequestcacheprivate.h"
-#include "gtksnapshotprivate.h"
 #include "gtkwidgetprivate.h"
 #include "gtkwindow.h"
 #include "gtkassistant.h"
@@ -322,8 +321,6 @@ static void     gtk_container_children_callback    (GtkWidget         *widget,
                                                     gpointer           client_data);
 static gint     gtk_container_draw                 (GtkWidget         *widget,
                                                     cairo_t           *cr);
-static void     gtk_container_snapshot             (GtkWidget         *widget,
-                                                    GtkSnapshot       *snapshot);
 static GtkSizeRequestMode gtk_container_get_request_mode (GtkWidget   *widget);
 
 static GtkWidgetPath * gtk_container_real_get_path_for_child (GtkContainer *container,
@@ -458,7 +455,6 @@ gtk_container_class_init (GtkContainerClass *class)
 
   widget_class->destroy = gtk_container_destroy;
   widget_class->compute_expand = gtk_container_compute_expand;
-  widget_class->snapshot = gtk_container_snapshot;
   widget_class->draw = gtk_container_draw;
   widget_class->focus = gtk_container_focus;
   widget_class->get_request_mode = gtk_container_get_request_mode;
@@ -3042,37 +3038,6 @@ gtk_container_draw (GtkWidget *widget,
   g_array_free (child_infos, TRUE);
 
   return FALSE;
-}
-
-static void
-gtk_container_snapshot_forall (GtkWidget *child,
-                               gpointer   snapshot)
-{
-  gtk_widget_snapshot_child (_gtk_widget_get_parent (child),
-                             child,
-                             snapshot);
-}
-
-static void
-gtk_container_snapshot (GtkWidget   *widget,
-                        GtkSnapshot *snapshot)
-{
-  GtkContainer *container = GTK_CONTAINER (widget);
-  GtkAllocation allocation, clip;
-  graphene_rect_t bounds;
-
-  gtk_widget_get_clip (widget, &clip);
-  gtk_widget_get_allocation (widget, &allocation);
-  graphene_rect_init (&bounds,
-                      clip.x - allocation.x, clip.y - allocation.y,
-                      clip.width, clip.height);
-  gtk_snapshot_push (snapshot, &bounds, "Children<%s>", G_OBJECT_TYPE_NAME (container));
-
-  gtk_container_forall (container,
-                        gtk_container_snapshot_forall,
-                        snapshot);
-
-  gtk_snapshot_pop (snapshot);
 }
 
 static gboolean

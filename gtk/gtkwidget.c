@@ -940,7 +940,28 @@ static void
 gtk_widget_real_snapshot (GtkWidget   *widget,
                           GtkSnapshot *snapshot)
 {
-  /* nothing to do here */
+  GtkAllocation allocation, clip;
+  GtkWidget *child;
+  graphene_rect_t bounds;
+
+  gtk_widget_get_clip (widget, &clip);
+  gtk_widget_get_allocation (widget, &allocation);
+  graphene_rect_init (&bounds,
+                      clip.x - allocation.x, clip.y - allocation.y,
+                      clip.width, clip.height);
+  gtk_snapshot_push (snapshot, &bounds, "Children<%s>", G_OBJECT_TYPE_NAME (widget));
+
+  for (child = _gtk_widget_get_first_child (widget);
+       child != NULL;
+       child = _gtk_widget_get_next_sibling (child))
+    {
+      gtk_widget_snapshot_child (widget,
+                                 child,
+                                 snapshot);
+
+    }
+
+  gtk_snapshot_pop (snapshot);
 }
 
 static void
