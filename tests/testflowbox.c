@@ -54,8 +54,6 @@ populate_flowbox_simple (GtkFlowBox *flowbox)
 
       gtk_container_add (GTK_CONTAINER (frame), widget);
 
-      if (text_orientation == GTK_ORIENTATION_VERTICAL)
-        gtk_label_set_angle (GTK_LABEL (widget), 90);
       g_object_set_data_full (G_OBJECT (frame), "id", (gpointer)g_strdup (text), g_free);
       gtk_container_add (GTK_CONTAINER (flowbox), frame);
 
@@ -150,9 +148,6 @@ populate_flowbox_wrappy (GtkFlowBox *flowbox)
       gtk_widget_show (widget);
       gtk_widget_show (frame);
 
-      if (text_orientation == GTK_ORIENTATION_VERTICAL)
-        gtk_label_set_angle (GTK_LABEL (widget), 90);
-
       gtk_container_add (GTK_CONTAINER (frame), widget);
 
       gtk_label_set_line_wrap (GTK_LABEL (widget), TRUE);
@@ -186,9 +181,6 @@ populate_flowbox_images (GtkFlowBox *flowbox)
       gtk_container_add (GTK_CONTAINER (widget), image);
       gtk_container_add (GTK_CONTAINER (widget), label);
       gtk_widget_show_all (widget);
-
-      if (text_orientation == GTK_ORIENTATION_VERTICAL)
-        gtk_label_set_angle (GTK_LABEL (widget), 90);
 
       g_object_set_data_full (G_OBJECT (widget), "id", (gpointer)g_strdup (text), g_free);
       gtk_container_add (GTK_CONTAINER (flowbox), widget);

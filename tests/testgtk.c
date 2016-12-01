@@ -1386,13 +1386,6 @@ void create_labels (GtkWidget *widget)
 }
 
 static void
-on_angle_scale_changed (GtkRange *range,
-			GtkLabel *label)
-{
-  gtk_label_set_angle (GTK_LABEL (label), gtk_range_get_value (range));
-}
-
-static void
 create_rotated_label (GtkWidget *widget)
 {
   static GtkWidget *window = NULL;
@@ -1438,9 +1431,6 @@ create_rotated_label (GtkWidget *widget)
 
       hscale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL,
                                          0, 360, 5);
-      g_signal_connect (hscale, "value-changed",
-			G_CALLBACK (on_angle_scale_changed), label);
-
       gtk_range_set_value (GTK_RANGE (hscale), 45);
       gtk_widget_set_size_request (hscale, 200, -1);
       gtk_box_pack_start (GTK_BOX (scale_hbox), hscale, TRUE, TRUE);

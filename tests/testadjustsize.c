@@ -48,9 +48,6 @@ create_label (gboolean vertical,
 
   widget = gtk_label_new ("This is a label, label label label");
 
-  if (vertical)
-    gtk_label_set_angle (GTK_LABEL (widget), 90);
-
   if (wrap)
     gtk_label_set_line_wrap (GTK_LABEL (widget), TRUE);
 

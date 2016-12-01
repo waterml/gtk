@@ -9,7 +9,6 @@ oriented_test_widget (const gchar *label, const gchar *color, gdouble angle)
   gchar *data;
 
   widget = gtk_label_new (label);
-  gtk_label_set_angle (GTK_LABEL (widget), angle);
   box = gtk_event_box_new ();
   provider = gtk_css_provider_new ();
   data = g_strdup_printf ("GtkEventBox { background-color: %s; }", color);
