@@ -2375,7 +2375,6 @@ gtk_stack_init (GtkStack *stack)
                                                      GTK_WIDGET (stack),
                                                      gtk_stack_measure,
                                                      gtk_stack_allocate,
-                                                     NULL,
                                                      gtk_stack_render,
                                                      NULL,
                                                      NULL);
